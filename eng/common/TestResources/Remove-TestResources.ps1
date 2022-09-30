@@ -194,6 +194,10 @@ $wellKnownSubscriptions = @{
 
 # Print which subscription is currently selected.
 $subscriptionName = $context.Subscription.Id
+Write-Host 'bbp -------------------'
+Write-Host ($context | ConvertTo-Json -Depth 10)
+Write-Host ($context.Subscription.Id.ToCharArray() -join ' ')
+Write-Host 'bbp -------------------'
 if ($wellKnownSubscriptions.ContainsKey($subscriptionName)) {
     $subscriptionName = '{0} ({1})' -f $wellKnownSubscriptions[$subscriptionName], $subscriptionName
 }
