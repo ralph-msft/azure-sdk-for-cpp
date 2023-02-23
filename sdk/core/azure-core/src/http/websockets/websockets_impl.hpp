@@ -9,6 +9,7 @@
 #include <random>
 #include <shared_mutex>
 #include <thread>
+#include <condition_variable>
 
 // Implementation of WebSocket protocol.
 namespace Azure { namespace Core { namespace Http { namespace WebSockets { namespace _detail {
