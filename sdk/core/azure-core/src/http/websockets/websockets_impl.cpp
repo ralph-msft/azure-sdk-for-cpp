@@ -69,6 +69,15 @@ namespace Azure { namespace Core { namespace Http { namespace WebSockets { names
     clientOptions.Transport = Azure::Core::Http::Policies::TransportOptions{};
 
 #if defined(BUILD_TRANSPORT_WINHTTP_ADAPTER)
+    if (m_options.Transport.HttpProxy)
+    {
+      transportOptions.ProxyInformation = m_options.Transport.HttpProxy.Value();
+      transportOptions.ProxyUserName = m_options.Transport.ProxyUserName;
+      transportOptions.ProxyPassword = m_options.Transport.ProxyPassword;
+
+      m_options.Transport.HttpProxy.Reset();
+    }
+
     auto winHttpTransport
         = std::make_shared<Azure::Core::Http::WebSockets::WinHttpWebSocketTransport>(
             m_options.Transport);
