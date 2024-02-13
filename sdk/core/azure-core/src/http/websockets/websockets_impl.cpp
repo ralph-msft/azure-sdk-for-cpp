@@ -661,7 +661,7 @@ namespace Azure { namespace Core { namespace Http { namespace WebSockets { names
   WebSocketImplementation::DecodeFrame(Azure::Core::Context const& context)
   {
     // Ensure single threaded access to receive this frame.
-    std::unique_lock<std::mutex> lock(m_transportMutex);
+    std::unique_lock<std::mutex> lock(m_transportReadMutex);
     if (IsTransportEof())
     {
       throw std::runtime_error("Frame buffer is too small.");
@@ -735,7 +735,7 @@ namespace Azure { namespace Core { namespace Http { namespace WebSockets { names
       m_bufferPos = 0;
       if (m_bufferLen == 0)
       {
-        m_eof = true;
+        m_eof.store(true, std::memory_order_release);
         return 0;
       }
     }
@@ -783,7 +783,7 @@ namespace Azure { namespace Core { namespace Http { namespace WebSockets { names
       std::vector<uint8_t> const& sendFrame,
       Azure::Core::Context const& context)
   {
-    std::unique_lock<std::mutex> transportLock(m_transportMutex);
+    std::unique_lock<std::mutex> transportLock(m_transportWriteMutex);
     m_receiveStatistics.BytesSent += static_cast<uint32_t>(sendFrame.size());
     m_receiveStatistics.FramesSent += 1;
     m_transport->SendBuffer(sendFrame.data(), sendFrame.size(), context);
